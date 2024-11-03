@@ -1,0 +1,6 @@
+testing_fifo
+.direnv
+.devenv
+__pycache__
+*.egg-info
+.kakrc.kak
