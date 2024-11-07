@@ -4,3 +4,4 @@ testing_fifo
 __pycache__
 *.egg-info
 .kakrc.kak
+result

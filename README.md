@@ -4,7 +4,7 @@
 
 Create a headless terminal and control it via a FIFO. Only tested on linux, might work on *nix.
 
-Integration for kakoune editor is provided in `rc/text-file-terminal.kak`.
+Integration for kakoune editor is provided in `rc/text-file-terminal.kak`. It depends on [kak-ansi](https://github.com/eraserhd/kak-ansi) for highlighting.
 
 ## Usage
 

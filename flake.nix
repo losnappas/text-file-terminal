@@ -63,19 +63,34 @@
             pname = "text-file-terminal";
             src = ./.;
             format = "pyproject";
-            nativeBuildInputs = [ pkgs.makeWrapper ];
             buildInputs = [
               pkgs.python3Packages.setuptools
               pkgs.python3Packages.wheel
             ];
           };
 
-          packages.hmModule = { config, lib, ...}: {
-            nixpkgs.overlays = [
-              (_: _: {
-                kakounePlugins.text-file-terminal = self'.packages.default;
-              })
-            ];
+          packages.hmModules.text-file-terminal = { config, lib, pkgs, ...}: with lib;
+            let
+              cfg = config.programs.kakoune.text-file-terminal;
+            in
+            {
+            options.programs.kakoune.text-file-terminal = {
+              enable = mkEnableOption "kak-text-file-terminal";
+              package = mkOption {
+                type = types.package;
+                default = self'.packages.default;
+                description = "The package to use for text-file-terminal.";
+              };
+            };
+            config = mkIf cfg.enable {
+              programs.kakoune.plugins = [
+                (pkgs.kakouneUtils.buildKakounePluginFrom2Nix {
+                  pname = "text-file-terminal";
+                  version = "1.0.0";
+                  src = cfg.package;
+                })
+              ];
+            };
           };
         };
       flake = {
