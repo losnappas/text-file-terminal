@@ -1,6 +1,6 @@
 # text-file-terminal
 
-[![Showcase video](./assets/screenrec.webm)](./assets/screenrec.webm)
+[Screen recording; demo](https://github.com/user-attachments/assets/6f5c741a-5199-4045-9a1b-b3a782d8663d)
 
 Create a headless terminal and control it via a FIFO. Only tested on linux, might work on *nix.
 
