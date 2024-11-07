@@ -15,8 +15,8 @@
   };
 
   outputs =
-    inputs@{ flake-parts, ... }:
-    flake-parts.lib.mkFlake { inherit inputs; } {
+    inputs@{ flake-parts, self, ... }:
+    flake-parts.lib.mkFlake { inherit inputs self; } {
       imports = [
         inputs.devenv.flakeModule
       ];
@@ -27,6 +27,7 @@
           self',
           inputs',
           pkgs,
+          lib,
           system,
           ...
         }:
@@ -41,8 +42,8 @@
             languages.nix.enable = true;
             languages.shell.enable = true;
             languages.python = {
-                enable = true;
-                venv.enable = true;
+              enable = true;
+              venv.enable = true;
             };
 
             packages = with pkgs; [
@@ -67,37 +68,59 @@
               pkgs.python3Packages.setuptools
               pkgs.python3Packages.wheel
             ];
+            meta.mainProgram = "text-file-terminal";
           };
 
-          packages.hmModules.text-file-terminal = { config, lib, pkgs, ...}: with lib;
-            let
-              cfg = config.programs.kakoune.text-file-terminal;
-            in
-            {
-            options.programs.kakoune.text-file-terminal = {
-              enable = mkEnableOption "kak-text-file-terminal";
-              package = mkOption {
-                type = types.package;
-                default = self'.packages.default;
-                description = "The package to use for text-file-terminal.";
-              };
-            };
-            config = mkIf cfg.enable {
-              programs.kakoune.plugins = [
-                (pkgs.kakouneUtils.buildKakounePluginFrom2Nix {
-                  pname = "text-file-terminal";
-                  version = "1.0.0";
-                  src = cfg.package;
-                })
-              ];
-            };
+          packages.kak-text-file-terminal = pkgs.kakouneUtils.buildKakounePluginFrom2Nix {
+            pname = "kak-text-file-terminal";
+            version = "1.0.0";
+            src = ./rc;
+            buildInputs = [
+              self'.packages.default
+            ];
+            postPatch = ''
+              substituteInPlace text-file-terminal.kak \
+              	--replace-fail \
+              	  "text_file_terminal_exec 'text-file-terminal'" \
+              	  "text_file_terminal_exec '${lib.getExe self'.packages.default}'" \
+              	--replace-fail "bash" "${lib.getExe pkgs.bashInteractive}"
+            '';
           };
         };
       flake = {
-        # The usual flake attributes can be defined here, including system-
-        # agnostic ones like nixosModule and system-enumerating ones, although
-        # those are more easily expressed in perSystem.
+        hmModules = {
+          text-file-terminal =
+            {
+              config,
+              lib,
+              pkgs,
+              ...
+            }:
+            with lib;
+            let
+              cfg = config.programs.kakoune.text-file-terminal;
+              localPkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
 
+            in
+            {
+              options.programs.kakoune.text-file-terminal = {
+                enable = mkEnableOption "kak-text-file-terminal";
+                package = mkOption {
+                  type = types.package;
+                  default = localPkgs.kak-text-file-terminal;
+                  description = "The package to use for text-file-terminal.";
+                };
+              };
+              config = mkIf cfg.enable {
+                # home.packages = [
+                #   localPkgs.default
+                # ];
+                programs.kakoune.plugins = [
+                  cfg.package
+                ];
+              };
+            };
+        };
       };
     };
 }

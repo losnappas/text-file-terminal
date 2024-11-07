@@ -1,14 +1,8 @@
-# I see some potential, however seems like quite a bit of work.
-# - No bash history
-# - No LSP in scratch buffers (so no autocomplete from bash-lsp)
-# - No "upgrading" to regular interactive terminal, for e.g. curses apps or sudo password input
-# - No bash autocomplete
-# - No straightforward interop path, e.g. adding commands like "pick file" to insert to prompt
-# - Pretty sure fifo won't always close/zombie shell process will hang around
 provide-module text-file-terminal %{
-  declare-option -docstring 'osh path' str text_file_terminal_shell_exec 'bash'
+  declare-option -docstring 'shell path' str text_file_terminal_shell_exec 'bash'
   declare-option -docstring 'fifo' -hidden str text_file_terminal_fifo_path
-  declare-option -docstring 'text-file-terminal exec' str text_file_terminal_exec 'python3 -m text_file_terminal.main'
+  # python3 -m text_file_terminal.main
+  declare-option -docstring 'text-file-terminal path' str text_file_terminal_exec 'text-file-terminal'
 
   define-command -override text-file-terminal-send-shell-cmd %{
     evaluate-commands -draft %{
@@ -35,6 +29,7 @@ provide-module text-file-terminal %{
 
   hook -always -group text-file-terminal global BufClose \*text-terminal\* %{ nop %sh{
     if [ -f "$kak_opt_text_file_terminal_fifo_path" ]; then
+      # Should close the forked/setsid program somehow.
       rm -rf "$kak_opt_text_file_terminal_fifo_path"
     fi
   }}
@@ -55,14 +50,7 @@ provide-module text-file-terminal %{
     }
   }
 
-  define-command -override text-file-terminal-open-shell-input %{
-    evaluate-commands %{
-      edit -scratch *text-terminal-input*
-      map buffer insert <s-ret> '<esc>: text-file-terminal-send-shell-cmd<ret>i'
-    }
-  }
-
-  define-command -override text-file-terminal-open-shell-input-new %{
-    new text-file-terminal-open-shell-input
+  define-command -override text-file-terminal-open-input %{
+    edit -scratch *text-terminal-input*
   }
 }

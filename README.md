@@ -1,12 +1,12 @@
 # text-file-terminal
 
+An experiment at a terminal controlled from a text editor. Kinda like shell mode/eshell from emacs. Because I cannot stand scrolling up/down/selecting text/etc. in a regular terminal.
+
 [Screen recording; demo](https://github.com/user-attachments/assets/6f5c741a-5199-4045-9a1b-b3a782d8663d)
 
 Create a headless terminal and control it via a FIFO. Only tested on linux, might work on *nix.
 
-Integration for kakoune editor is provided in `rc/text-file-terminal.kak`. It depends on [kak-ansi](https://github.com/eraserhd/kak-ansi) for highlighting.
-
-## Usage
+# Usage
 
 ```console
 $ text-file-terminal --help
@@ -34,3 +34,19 @@ $ echo 'echo $A' > "$fifo"
 ```
 
 For text editor integration, you need to be able to render ansi escape codes into something meaningful.
+
+## Missing features / bugs
+
+- No bash history.
+- No LSP in scratch buffers (so no autocomplete from bash-lsp) (restriction on kak-lsp side).
+- No bash autocomplete.
+- No handling of ctrl-c.
+- Zombie processes (the immediate fork problem); as text editor quits the forked/setsid terminal process hangs around. It should go away.
+- Need some way to "inherit" the terminal so TUIs can be controlled / sudo password input.
+- Would be neat to have a more straightforward system for the text input, current doesn't play too nice with windowing and seems burdensome on the user.
+- No straightforward interop path, e.g. adding commands like "pick file" to insert to prompt.
+
+### Alternative art
+
+- [ht](https://github.com/andyk/ht)
+- [oil shell headless](https://www.oilshell.org/blog/2023/12/screencasts.html#headless-protocol-oils-web_shell)
