@@ -2,7 +2,9 @@
 
 An experiment at a terminal controlled from a text editor. Kinda like shell mode/eshell from emacs. Because I cannot stand scrolling up/down/selecting text/etc. in a regular terminal.
 
-[Screen recording; demo](https://github.com/user-attachments/assets/6f5c741a-5199-4045-9a1b-b3a782d8663d)
+[Screen recording; demo](https://github.com/user-attachments/assets/9485ec7d-14e4-440c-a0e4-a378c3af02ce)
+
+^No dice on the nmtui, plus the color theme used is bad.
 
 # Usage
 
@@ -30,7 +32,7 @@ send-to-pty 'keys'
 - No handling of ctrl-c or similar.
 - Zombie processes (the terminal doesn't close :feelsbadman:). It's a bug.
 - Would need some way to "inherit"/interact with the terminal so TUIs can be controlled / sudo password input.
-  - Can send input, e.g. sudo password, manually via `:send-to-pty "<keys>"<ret>`.
+  - Can send input, e.g. sudo password, manually via `:send-to-pty "<keys>"<ret>`. However, inserting raw character seems to not work in the prompt.
 
 ### Alternative art
 
