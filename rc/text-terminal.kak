@@ -2,9 +2,6 @@ provide-module -override text-terminal %{
   declare-option -hidden int text_terminal_counter 0
   declare-option -docstring 'Path to `script(1)` program' str text_terminal_script_exec 'script'
   declare-option -hidden str text_terminal_fifos
-  # Match up to non-trailing space after ' $ ', it will be the input prompt.
-  # Would've used ' \$ (.+?)' but idk how to get the capture group register then? Doesn't seem to be on %reg(1).
-  # Now it has a loobehind that works.
   declare-option -docstring 'Prompt string that will be searched for' regex text_terminal_prompt_matcher ' \$ '
 
   define-command -hidden -override -docstring 'Send current prompt to the terminal' send-prompt-to-pty %{
