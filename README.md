@@ -8,7 +8,7 @@ An experiment at a terminal controlled from a text editor. Kinda like shell mode
 
 # Usage
 
-Load up the rc dir, then require the module.
+Load up the rc dir, then require the module. You should install [kak-ansi](https://github.com/eraserhd/kak-ansi) if you want syntax highlighting, otherwise you'll see ANSI escape characters all over.
 
 ```kakscript
 hook -once global KakBegin .* %{
