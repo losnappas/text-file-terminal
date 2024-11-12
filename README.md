@@ -18,8 +18,9 @@ hook -once global KakBegin .* %{
 }
 
 start-pty
-# Or hit <s-ret> to send whatever is after the matched prompt.
 
+# Hit <s-ret> to send whatever is after the matched prompt.
+#   -- or --
 # Manually send keys.
 send-to-pty 'keys'
 ```
@@ -30,7 +31,6 @@ send-to-pty 'keys'
 - No LSP in scratch buffers (so no autocomplete from bash-lsp) (restriction on kak-lsp side).
 - No bash autocomplete.
 - No handling of ctrl-c or similar.
-- Zombie processes (the terminal doesn't close :feelsbadman:). It's a bug.
 - Would need some way to "inherit"/interact with the terminal so TUIs can be controlled / sudo password input.
   - Can send input, e.g. sudo password, manually via `:send-to-pty "<keys>"<ret>`. However, inserting raw character seems to not work in the prompt.
 
