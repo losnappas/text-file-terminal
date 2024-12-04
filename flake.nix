@@ -42,9 +42,9 @@
             languages.nix.enable = true;
             languages.shell.enable = true;
 
-            # packages = with pkgs; [
-            #   unixtools.script
-            # ];
+            packages = with pkgs; [
+              unixtools.script
+            ];
 
             # enterShell = '''';
           };
@@ -53,7 +53,7 @@
 
           packages.default = pkgs.kakouneUtils.buildKakounePluginFrom2Nix {
             pname = "kak-text-file-terminal";
-            version = "1.0.0";
+            version = "1.1.0";
             src = ./rc;
           };
         };
