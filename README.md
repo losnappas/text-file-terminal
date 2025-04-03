@@ -13,8 +13,6 @@ Load up the rc dir, then require the module. You should install [kak-ansi](https
 ```kakscript
 hook -once global KakBegin .* %{
   require-module text-terminal
-  # Regex to match the end of your $PS1, this is the default value.
-  set-option global text_terminal_prompt_matcher ' \$ '
 }
 
 start-pty

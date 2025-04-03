@@ -7,7 +7,6 @@ try %{
 define-command -override start-pty-haskell %{
   set-option local text_terminal_script_args %exp{-c "%opt(text_terminal_start_haskell)"}
   start-pty
-  set-option buffer text_terminal_prompt_matcher '> '
 }
 
 define-command -override -params 0..1 send-to-pty-haskell %{

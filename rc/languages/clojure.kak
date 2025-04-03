@@ -18,8 +18,6 @@ try %{
 define-command -override start-pty-clojure %{
   set-option local text_terminal_script_args %exp{-c "%opt(text_terminal_start_clojure)"}
   start-pty
-
-  set-option buffer text_terminal_prompt_matcher '=> '
 }
 
 define-command -override -params 1 send-to-pty-clojure %{
