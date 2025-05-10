@@ -17,7 +17,7 @@ hook -once global KakBegin .* %{
 
 start-pty
 
-# Hit <s-ret> to send whatever is after the matched prompt.
+# Hit <s-ret>.
 #   -- or --
 # Manually send keys.
 send-to-pty 'keys'
@@ -25,7 +25,7 @@ send-to-pty 'keys'
 
 ## Missing features / bugs
 
-- No bash history.
+- ~~No bash history.~~ Actually you can trigger your `${BASH_HISTORY}` file just normal, but you have to bind this yourself. See <./rc/text-terminal.kak> for example.
 - No LSP in scratch buffers (so no autocomplete from bash-lsp) (restriction on kak-lsp side).
 - No bash autocomplete.
 - No handling of ctrl-c or similar.

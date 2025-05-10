@@ -74,6 +74,11 @@ provide-module -override text-terminal %{
       require-module "text-terminal-%val(hook_param_capture_1)"
     }
   }
+  hook -group text-terminal-filetypes global BufSetOption filetype=python %{
+    try %{
+      require-module "text-terminal-ipython"
+    }
+  }
 }
 
 provide-module -override text-terminal-history %{
