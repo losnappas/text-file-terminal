@@ -16,6 +16,14 @@ provide-module -override text-terminal %{
       }
   }
 
+  define-command -override -docstring %{
+    Make the current buffer's terminal the target of future evals.
+
+    You're expected to be in the shell buffer when running this command.
+  } make-current-pty-active %{
+    set-option global text_terminal_fifos %opt(text_terminal_fifos)
+  }
+
   define-command -hidden -override -docstring 'Send current prompt to the terminal' send-prompt-to-pty %{
     evaluate-commands -draft -save-regs '"/' %{
       select "%opt(text_terminal_prompt_start_position),9999999.9999999"
@@ -29,13 +37,19 @@ provide-module -override text-terminal %{
     execute-keys -with-hooks geA
   }
 
+  define-command send-to-pty-as-paste -override -params 0..1 -docstring 'Send to the terminal, as a paste event. E.g. `send-to-pty-as-paste "exit"' %{
+    nop %sh{
+      printf '\e[200~%s\e[201~\n' "${1:-$kak_reg_dot}" > "$kak_opt_text_terminal_fifos/in"
+    }
+  }
+
   define-command send-to-pty -override -params 1 -docstring 'Send to the terminal. E.g. `send-to-pty "exit"' %{
     echo -end-of-line -to-file "%opt(text_terminal_fifos)/in" %arg(@)
   }
 
   define-command -override start-pty %{
-    set-option current text_terminal_fifos %sh{
-      fifo_dir="$(mktemp -d "${TMPDIR:-/tmp}/kak-text-terminal.XXXXXX")"
+    set-option local text_terminal_fifos %sh{
+      fifo_dir="$(mktemp -d "${XDG_RUNTIME_DIR:-/tmp}/kak-text-terminal.XXXXXX")"
       mkfifo "$fifo_dir/in"
       printf "%s" "$fifo_dir"
     }
@@ -46,7 +60,6 @@ provide-module -override text-terminal %{
       echo $pid > %opt(text_terminal_fifos)/pid
       wait
     }
-    hook -always -once buffer BufClose .* kill-pty
     hook -always -once buffer BufCloseFifo .* kill-pty
     hook -group text-terminal-hook buffer User AnsiColored=.*,(?<start>.*) %{
       set-option buffer text_terminal_prompt_start_position "%val(hook_param_capture_start)"
@@ -54,6 +67,7 @@ provide-module -override text-terminal %{
 
     try ansi-enable
     set-option buffer text_terminal_fifos %opt(text_terminal_fifos)
+    make-current-pty-active
     execute-keys -with-hooks geA
   }
 

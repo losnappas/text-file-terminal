@@ -15,7 +15,7 @@ define-command -override send-to-pty-ipython-cell %{
     select-ipython-cell
 
     evaluate-commands -itersel %{
-      send-to-pty "%reg(dot)"
+      send-to-pty-as-paste "%reg(dot)"
     }
   }
 }
