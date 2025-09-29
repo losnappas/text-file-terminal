@@ -96,17 +96,16 @@ provide-module -override text-terminal %{
 }
 
 provide-module -override text-terminal-history %{
-  require-module peneira
   remove-hooks global text-terminal-history
 
-  define-command -override -hidden -params .. peneira-insert-selection %{
+  define-command -hidden -override -params 1 text-terminal-paste %{
     evaluate-commands -save-regs p %{
       set-register p "%arg(@)"
-      execute-keys <esc>"p<a-p>a
+      execute-keys <esc>"p<a-P>a
     }
   }
 
   hook -group text-terminal-history global BufCreate ^\*shell\*$ %{
-    map buffer insert <a-r> '<esc>: peneira "> " %{ tac "${HISTFILE:-~/.bash_history}" } %{ peneira-insert-selection %arg(@) }<ret>'
+    map buffer insert <a-r> %{<esc>: prompt -menu -shell-script-candidates %{ tac "${HISTFILE:-~/.bash_history}" }  "> " %{text-terminal-paste "%val(text)"}<ret>}
   }
 }
